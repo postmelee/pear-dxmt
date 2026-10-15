@@ -4,6 +4,11 @@ This repository owns DXMT renderer and typed Wine Metal lease consumer source. T
 
 The pinned upstream commit is `7c8dee1c2d73415301ceb7d1fa810861cef4cd67`. The selected range contains 6 changed source units. A merged source view is not a claim that every retained compiled object used that same view. Build recipes must preserve their per-artifact source/configuration correspondence. Wine 11/CodeWeavers Preview is a separate lineage.
 
+The selected reconstruction uses fork commit `e800e770006fc7c37831ab857000a4781c85f6fd` with runtime builder
+`c8887f9edaba57dffe7772cc26fd19aa9571d451`. Later source/test commits are development inputs only when a new
+reviewed recipe names them. Preserve this lock and its original receipts; do not
+substitute a current branch tip or a dirty test checkout for the historical pin.
+
 ## Source checks available now
 
 From this repository root, using Python 3 and Git:
@@ -18,9 +23,45 @@ These commands check selected source identities, modes, ancestry, closed source 
 
 ## Build and verification owner
 
-[pear-runtime](https://github.com/postmelee/pear-runtime) owns portable build/assembly, immutable input locks, generated diagnostic schemas, signing/admission and paired integration tests. Its Stage 3 recipe implementation is pending at this source-import checkpoint; no unimplemented build command is claimed here. The bounded first reconstruction may reuse explicitly declared immutable lower-layer objects and admitted tools. It must compile current selected units from these forks into isolated outputs and verify all implicit headers, helpers and libraries.
+[pear-runtime](https://github.com/postmelee/pear-runtime) owns build/assembly, immutable input locks, generated
+diagnostic schemas, signing/admission and paired integration tests. Its
+[selected graphics recipe](https://github.com/postmelee/pear-runtime/blob/c8887f9edaba57dffe7772cc26fd19aa9571d451/recipes/graphics/README.md)
+was exercised in the Stage 3 reconstruction. It rebuilds the selected units,
+relinks explicitly retained lower layers and records actual headers, tools and
+libraries. It is a bounded reconstruction, not a clean rebuild of every upstream
+target. Run the recipe from its pinned runtime checkout; private local bindings
+and the exact immutable input pack remain required.
 
-Wine requires the admitted LLVM-MinGW/Bison toolchain and Apple SDK/native tools. Graphics additionally requires admitted native LLVM 15, CMake/Ninja/Meson/Python and Metal tooling. Preserve the exact recorded target/flags and generated shader inputs; a new tool version requires re-admission. Game files, authenticated prefixes, owned image/spec inputs and signing material are never source dependencies in this repository.
+```sh
+python3 -B -m pear_runtime.recipes.graphics \
+  --recipe recipes/graphics/selected-v1.json \
+  --bindings "$GRAPHICS_BINDINGS" \
+  --output "$FRESH_GRAPHICS_OUTPUT"
+```
+
+This command runs from `pear-runtime`, after all named variables have been bound
+to reviewed canonical paths and the storage/input gates pass. The
+[development guide](https://github.com/postmelee/pear-runtime/blob/codex/task56/docs/development.md) distinguishes the historical build pins from later
+test/tool revisions and provides the fixture and bounded recovery commands.
+
+The exercised development selector uses the separate runtime tool commit
+`6f0202b457f0e585c5c7621a63d203e77d07386d` and the exact
+[Pear development lock](https://github.com/postmelee/pear/blob/codex/task56/tools/development/locks/task56-development-v1.json).
+This later tool revision does not replace the compilation pins above.
+The retained candidate also binds canonical builder-source paths: a checkout
+with equal bytes at another path is not automatically an admitted replacement.
+
+The bounded graphics recipe requires Python 3, Git, the admitted Apple
+compiler/SDK, native LLVM 15 link archives and the immutable Wine/DXMT
+object/configuration/import-library/generated-shader pack. It compiles
+five selected units and relinks the declared lower layers. The DirectX
+submodule remains pinned by the source manifest. The original upstream
+[build guide](../docs/DEVELOPMENT.md) describes a broader build with
+Meson, CMake/Ninja and Metal tooling; that is a different scope from this
+bounded reconstruction. Public source history alone cannot recover retained
+compiled/generated inputs. Preserve target flags and the recorded `clang++`
+invocation; admit changed tools explicitly. Game files, authenticated prefixes,
+owned image/spec inputs and signing material are not stored here.
 
 ## Shared source authority
 
@@ -42,4 +83,24 @@ DXMT's upstream contribution policy rejects AI-generated/co-authored contributio
 - [pear-runtime](https://github.com/postmelee/pear-runtime): compatible composition, build, verification and recovery.
 - [Pear](https://github.com/postmelee/pear): app/Steam/game policy and development selection.
 
-These repositories currently require collaborator access. Source validation, compilation, synthetic runtime tests, game qualification and public distribution are separate claims. No newly reconstructed runtime, Megabonk success, general no-Rosetta coverage or public distribution qualification is established at this import checkpoint. Preserve the previous environment and recovery inputs until the new handoff is verified.
+These component repositories require collaborator access. Source validation,
+compilation, synthetic runtime tests, game qualification and public distribution
+remain separate claims. The selected reconstruction and candidate3's four native
+controls, three bootstrap controls, seven-fixture batch and eighteen-frame
+observation passed within their recorded scopes and independent-release checks.
+Retained candidate2 evidence is reused only under the reviewed unchanged-input
+boundary. The [accepted method map](https://github.com/postmelee/pear-runtime/blob/codex/task56/provenance/paired-memory-methods.json)
+does not turn selected-input semantics into generic future enforcement.
+
+Pear development prepare/select/inspect and selection-metadata recovery passed.
+The seven v5 synthetic fixtures passed through the actual Pear selector, and new
+independent resource checks covered those seven and the eight retained native,
+bootstrap and frame operations. Read-only game inspection admitted the exact
+private inputs and captured sources; game copying and execution were unperformed.
+Recovery switched the isolated selection from game to retained fixture and back;
+it was not a full runtime/toolchain/private-state restoration. See the
+[development entry and limits](https://github.com/postmelee/pear/blob/codex/task56/docs/development/rosetta-free.md#split-native-development-components).
+
+Preserve the previous environment and exact recovery inputs. Final source-authority
+cutover remains pending explicit owner acceptance. This development handoff does
+not establish gameplay, complete Rosetta-independence coverage or public distribution.
