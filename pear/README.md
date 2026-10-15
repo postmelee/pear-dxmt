@@ -67,7 +67,7 @@ owned image/spec inputs and signing material are not stored here.
 
 Wine owns the v1/v2 typed Metal provider headers; this fork tracks only exact pinned consumer mirrors. DXMT remains the provider of its upstream `src/winemetal/winemetal.h` and `winemetal_thunks.h`, which Wine consumes. Do not edit either consumer mirror independently.
 
-Canonical provider paths and exact digests are in the manifest. Frozen historical patches are provenance, not a second editable implementation. Final source authority cutover is pending owner acceptance; this import alone does not activate a runtime.
+Canonical provider paths and exact digests are in the manifest. The existing owners accepted this fork as the single future editable authority for its selected range; frozen historical patches remain provenance. The [canonical cutover record](https://github.com/postmelee/pear-runtime/blob/codex/task56/provenance/source-cutover-task56.json) binds the exact reviewed commits and ownership scope. This local acceptance does not activate a runtime, renew historical build pins or release retained inputs. Final private publication refs are recorded separately in the Pear Task #56 handoff.
 
 ## Licensing and contributions
 
@@ -101,6 +101,8 @@ Recovery switched the isolated selection from game to retained fixture and back;
 it was not a full runtime/toolchain/private-state restoration. See the
 [development entry and limits](https://github.com/postmelee/pear/blob/codex/task56/docs/development/rosetta-free.md#split-native-development-components).
 
-Preserve the previous environment and exact recovery inputs. Final source-authority
-cutover remains pending explicit owner acceptance. This development handoff does
-not establish gameplay, complete Rosetta-independence coverage or public distribution.
+Preserve the previous environment and exact recovery inputs. The accepted source
+cutover is limited to the recorded implementation, tests and development handoff;
+D37 and separate observation research retain their previous owners and status.
+This does not establish gameplay, complete Rosetta-independence coverage or
+public distribution, or authorize activation or artifact deletion.
