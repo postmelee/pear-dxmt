@@ -16,6 +16,7 @@
 typedef int NTSTATUS;
 #define STATUS_SUCCESS 0
 #define STATUS_UNSUCCESSFUL 0xC0000001
+#include "pear_present_observation.h"
 #include "pear_dxmt_metal_proxy.h"
 
 void
@@ -390,6 +391,14 @@ _MTLDevice_newComputePipelineState(void *obj) {
       info->fail_on_binary_archive_miss ? MTLPipelineOptionFailOnBinaryArchiveMiss : MTLPipelineOptionNone;
   params->ret_pso =
       (obj_handle_t)[device newComputePipelineStateWithDescriptor:descriptor options:options reflection:nil error:&err];
+  // Query the actual created pipeline, without changing its descriptor or policy.
+  if (getenv("PEAR_METAL_PIPELINE_OBSERVE") && params->ret_pso) {
+    if (@available(macOS 15.0, *)) {
+      id<MTLComputePipelineState> pipeline = (id<MTLComputePipelineState>)params->ret_pso;
+      fprintf(stderr, "PEAR_METAL_PIPELINE kind=compute validation=%ld function=%s\n",
+              (long)pipeline.shaderValidation, [descriptor.computeFunction.name UTF8String]);
+    }
+  }
   params->ret_error = (obj_handle_t)err;
   if (!err && info->binary_archive_for_serialization) {
     [(id<MTLBinaryArchive>)info->binary_archive_for_serialization addComputePipelineFunctionsWithDescriptor:descriptor
@@ -575,6 +584,14 @@ _MTLDevice_newRenderPipelineState(void *obj) {
                                                                                               options:options
                                                                                            reflection:nil
                                                                                                 error:&err];
+  // Query the actual created pipeline, without changing its descriptor or policy.
+  if (getenv("PEAR_METAL_PIPELINE_OBSERVE") && params->ret_pso) {
+    if (@available(macOS 15.0, *)) {
+      id<MTLRenderPipelineState> pipeline = (id<MTLRenderPipelineState>)params->ret_pso;
+      fprintf(stderr, "PEAR_METAL_PIPELINE kind=render validation=%ld function=%s\n",
+              (long)pipeline.shaderValidation, [descriptor.vertexFunction.name UTF8String]);
+    }
+  }
   params->ret_error = (obj_handle_t)err;
   if (!err && info->binary_archive_for_serialization) {
     [(id<MTLBinaryArchive>)info->binary_archive_for_serialization addRenderPipelineFunctionsWithDescriptor:descriptor
@@ -1304,6 +1321,7 @@ _MTLBuffer_didModifyRange(void *obj) {
 static NTSTATUS
 _MTLCommandBuffer_presentDrawable(void *obj) {
   struct unixcall_generic_obj_obj_noret *params = obj;
+  pear_present_observe((id<MTLCommandBuffer>)params->handle,(id<MTLDrawable>)params->arg);
   [(id<MTLCommandBuffer>)params->handle presentDrawable:(id<MTLDrawable>)params->arg];
   return STATUS_SUCCESS;
 }
@@ -1311,6 +1329,7 @@ _MTLCommandBuffer_presentDrawable(void *obj) {
 static NTSTATUS
 _MTLCommandBuffer_presentDrawableAfterMinimumDuration(void *obj) {
   struct unixcall_generic_obj_obj_double_noret *params = obj;
+  pear_present_observe((id<MTLCommandBuffer>)params->handle,(id<MTLDrawable>)params->arg0);
   [(id<MTLCommandBuffer>)params->handle presentDrawable:(id<MTLDrawable>)params->arg0
                                    afterMinimumDuration:params->arg1];
   return STATUS_SUCCESS;
@@ -3080,7 +3099,21 @@ static void pear_op_MetalLayer_nextDrawable(void *opaque,uint64_t layer)
     struct unixcall_generic_obj_obj_ret *params=call->params,local=*params;
     local.handle=layer;
     
+    if(pear_present_observing()) {
+        CAMetalLayer *observed=(CAMetalLayer*)(uintptr_t)layer;
+        NSView *view=(NSView*)observed.delegate;NSWindow *window=view.window;
+        fprintf(stderr,"PEAR_PRESENT_WINDOW window=%ld width=%lu height=%lu visible=%d title=%d main=%d\n",
+            (long)window.windowNumber,(unsigned long)observed.drawableSize.width,(unsigned long)observed.drawableSize.height,
+            window.visible,[window.title isEqualToString:@"Pear Presentation"],pthread_main_np());
+    }
     call->result=_pear_raw_MetalLayer_nextDrawable(&local);
+    if(local.ret && pear_present_observing()) {
+        id<CAMetalDrawable> drawable=(id<CAMetalDrawable>)(uintptr_t)local.ret;
+        CAMetalLayer *observed=(CAMetalLayer*)(uintptr_t)layer;
+        fprintf(stderr,"PEAR_PRESENT_TEXTURE drawable=%lu width=%lu height=%lu layer_width=%lu layer_height=%lu transaction=%d sync=%d\n",
+            (unsigned long)drawable.drawableID,(unsigned long)drawable.texture.width,(unsigned long)drawable.texture.height,
+            (unsigned long)observed.drawableSize.width,(unsigned long)observed.drawableSize.height,observed.presentsWithTransaction,observed.displaySyncEnabled);
+    }
     if(local.ret) [(id)(uintptr_t)local.ret retain];
     local.handle=params->handle; *params=local;
 }

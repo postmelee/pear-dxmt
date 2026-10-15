@@ -1,17 +1,17 @@
 /* Original Pear source integration. SPDX-License-Identifier: LGPL-2.1-or-later. */
-#include "pear_macdrv_metal_v1.h"
+#include "pear_macdrv_metal_v2.h"
 #include <pthread.h>
 #include <string.h>
-static const struct pear_macdrv_metal_v1 *pear_driver;
+static const struct pear_macdrv_metal_v2 *pear_driver;
 static pthread_once_t pear_driver_once=PTHREAD_ONCE_INIT;
 static void pear_resolve_driver(void)
 {
-    pear_metal_get_interface get=(pear_metal_get_interface)dlsym(RTLD_DEFAULT,"pear_macdrv_metal_v1_get_interface");
-    const struct pear_macdrv_metal_v1 *table=NULL;
-    if(!get || get(PEAR_METAL_VERSION,sizeof(*table),PEAR_METAL_FEATURES,&table) || !table) return;
-    if(table->version!=PEAR_METAL_VERSION || table->bytes!=sizeof(*table) ||
-       (table->features & PEAR_METAL_FEATURES)!=PEAR_METAL_FEATURES ||
-       !table->acquire || !table->query || !table->release || !table->with_layer) return;
+    pear_metal_v2_get_interface get=(pear_metal_v2_get_interface)dlsym(RTLD_DEFAULT,"pear_macdrv_metal_v2_get_interface");
+    const struct pear_macdrv_metal_v2 *table=NULL;
+    if(!get || get(PEAR_METAL_V2_VERSION,sizeof(*table),PEAR_METAL_V2_FEATURES,&table) || !table) return;
+    if(table->version!=PEAR_METAL_V2_VERSION || table->bytes!=sizeof(*table) ||
+       (table->features & PEAR_METAL_V2_FEATURES)!=PEAR_METAL_V2_FEATURES ||
+       !table->acquire || !table->query || !table->release || !table->with_layer || !table->acquire_window) return;
     pear_driver=table;
 }
 @interface PearDXMTMetalLease : NSObject { @public uint64_t token; }
@@ -36,10 +36,11 @@ static NTSTATUS _CreateMetalViewFromHWND(void *obj)
     uint64_t token=0;
     params->ret_view=params->ret_layer=0;
     pthread_once(&pear_driver_once,pear_resolve_driver);
-    if(!pear_driver || pear_driver->acquire(params->hwnd,params->device,&token) || !token) return STATUS_UNSUCCESSFUL;
+    if(!pear_driver || pear_driver->acquire_window(params->hwnd,params->device,&token) || !token) return STATUS_UNSUCCESSFUL;
     lease=[[PearDXMTMetalLease alloc] init];
     if(!lease) { pear_driver->release(token); return STATUS_UNSUCCESSFUL; }
     lease->token=token;
+    if(pear_present_observing()) { pear_present_witness(lease,2);pear_driver->with_layer(token,pear_present_layer,NULL); }
     params->ret_view=params->ret_layer=(obj_handle_t)(uintptr_t)lease;
     return STATUS_SUCCESS;
 }
@@ -49,4 +50,25 @@ static NTSTATUS _ReleaseMetalView(void *obj)
     PearDXMTMetalLease *lease=(PearDXMTMetalLease *)(uintptr_t)params->handle;
     if(!lease || ![lease isKindOfClass:[PearDXMTMetalLease class]]) return STATUS_UNSUCCESSFUL;
     [lease release]; return STATUS_SUCCESS;
+}
+
+/* Explicit v1 regression entry for the original native fixture. The normal
+ * Unix-call table always uses acquire_window; there is no production fallback. */
+__attribute__((visibility("default"))) NTSTATUS pear_dxmt_v1_fixture_create(void *obj)
+{
+    struct unixcall_create_metal_view_from_hwnd *params=obj;
+    const char *flag=getenv("PEAR_DXMT_PAIRING_FIXTURE");
+    const struct pear_macdrv_metal_v1 *v1=NULL;
+    pear_metal_get_interface get=(pear_metal_get_interface)dlsym(RTLD_DEFAULT,"pear_macdrv_metal_v1_get_interface");
+    PearDXMTMetalLease *lease;
+    uint64_t token=0;
+    params->ret_view=params->ret_layer=0;
+    pthread_once(&pear_driver_once,pear_resolve_driver);
+    if(!flag || strcmp(flag,"1") || !get || !pear_driver || get(1,48,7,&v1) || !v1 ||
+       v1->release!=pear_driver->release || v1->with_layer!=pear_driver->with_layer ||
+       v1->acquire(params->hwnd,params->device,&token) || !token) return STATUS_UNSUCCESSFUL;
+    lease=[[PearDXMTMetalLease alloc] init];
+    if(!lease) { v1->release(token);return STATUS_UNSUCCESSFUL; }
+    lease->token=token;params->ret_view=params->ret_layer=(obj_handle_t)(uintptr_t)lease;
+    return STATUS_SUCCESS;
 }

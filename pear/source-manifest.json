@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "component": "pear-dxmt",
-  "layer": "accepted",
+  "layer": "selected",
   "upstream": {
     "url": "https://github.com/3Shain/dxmt.git",
     "commit": "7c8dee1c2d73415301ceb7d1fa810861cef4cd67",
@@ -11,8 +11,8 @@
     {
       "path": "src/winemetal/unix/pear_dxmt_metal_proxy.h",
       "mode": "100644",
-      "size_bytes": 2596,
-      "sha256": "63218576d4e46c11cc8bc17dfd0c8b3179135c4d7758584dae229a2df7beeec0"
+      "size_bytes": 3955,
+      "sha256": "d84e4a9d0b92ba0fe8c36d1303d5d43e66ed8659e43e3637b60a764fcca75106"
     },
     {
       "path": "src/winemetal/unix/pear_macdrv_metal_v1.h",
@@ -21,10 +21,22 @@
       "sha256": "7a19ce6b49c19ab7603ff875d6e9d92ababa92dd1202fb3c912f02c2f6e5275d"
     },
     {
+      "path": "src/winemetal/unix/pear_macdrv_metal_v2.h",
+      "mode": "100644",
+      "size_bytes": 925,
+      "sha256": "c2da86219c1c90939339c39086b24d68a86d672cf72f239a88df3ac402be0eb9"
+    },
+    {
+      "path": "src/winemetal/unix/pear_present_observation.h",
+      "mode": "100644",
+      "size_bytes": 2422,
+      "sha256": "8bf16c6a1a23d8567e2c11f05774f5a822bb0c0359a7f41359260ec3d33a5486"
+    },
+    {
       "path": "src/winemetal/unix/winemetal_unix.c",
       "mode": "100644",
-      "size_bytes": 137071,
-      "sha256": "24b588b1234a2072ac7bb9832bb838dd06ada7b424af173b1bf7172195098d7a"
+      "size_bytes": 139364,
+      "sha256": "f4848c40edfc88d48081af5aa19e1e33220f5d13679f3e013499141d33ef436d"
     },
     {
       "path": "src/winemetal/winemetal_thunks.c",
@@ -76,6 +88,122 @@
         }
       ],
       "license": "LGPL-2.1-or-later integration; existing per-file notices retained"
+    },
+    {
+      "legacy_path": "runtime/dxmt/patches/0002-pipeline-validation-observation.patch",
+      "sha256": "4d0a69c33f4d4c67a7a75711b3da87b5ffe9368086c4b7c633dcacbff592ccb5",
+      "source_repository": "https://github.com/postmelee/pear",
+      "checkpoint_commit": "951264bf5be4b9d2afb87320f5fac74778b2dd58",
+      "last_path_commit": "2c709b1adfae5979b5de14ff9b1af0b272ff1806",
+      "matches_last_path_commit": true,
+      "origin_kind": "committed Pear patch",
+      "order": 2,
+      "layer": "selected",
+      "previous_classification": "selected_graphics_overlay",
+      "changes": [
+        {
+          "path": "src/winemetal/unix/winemetal_unix.c",
+          "before_sha256": "24b588b1234a2072ac7bb9832bb838dd06ada7b424af173b1bf7172195098d7a",
+          "after_sha256": "5d731f2142a0c1f71c7220c9d37379c9ce0cdc54cb499c2c853188017790f369",
+          "size_bytes": 138003,
+          "mode": "100644"
+        }
+      ],
+      "license": "LGPL-2.1-or-later integration; existing per-file notices retained"
+    },
+    {
+      "legacy_path": "runtime/dxmt/patches/0003-presentation-observation.patch",
+      "sha256": "cf658fe8d89ce42eb5c0efab4fdf1aed03ceec99b364a1ef4e390c89762eb324",
+      "source_repository": "https://github.com/postmelee/pear",
+      "checkpoint_commit": "951264bf5be4b9d2afb87320f5fac74778b2dd58",
+      "last_path_commit": "86d3fd7beb940c7c4bb6b8daf91e49c3d434224b",
+      "matches_last_path_commit": true,
+      "origin_kind": "committed Pear patch",
+      "order": 3,
+      "layer": "selected",
+      "previous_classification": "selected_graphics_overlay",
+      "changes": [
+        {
+          "path": "src/winemetal/unix/pear_present_observation.h",
+          "before_sha256": null,
+          "after_sha256": "8bf16c6a1a23d8567e2c11f05774f5a822bb0c0359a7f41359260ec3d33a5486",
+          "size_bytes": 2422,
+          "mode": "100644"
+        },
+        {
+          "path": "src/winemetal/unix/winemetal_unix.c",
+          "before_sha256": "5d731f2142a0c1f71c7220c9d37379c9ce0cdc54cb499c2c853188017790f369",
+          "after_sha256": "ecadd2f0303e9c78940ff05697a5049b1669389a127b2bea9438f6d3c3497eb2",
+          "size_bytes": 138740,
+          "mode": "100644"
+        },
+        {
+          "path": "src/winemetal/unix/pear_dxmt_metal_proxy.h",
+          "before_sha256": "63218576d4e46c11cc8bc17dfd0c8b3179135c4d7758584dae229a2df7beeec0",
+          "after_sha256": "8b950790b02c307effa17dca216d1472fbd81f7e8c8e0b6db123c2dddfadf7f5",
+          "size_bytes": 2719,
+          "mode": "100644"
+        }
+      ],
+      "license": "LGPL-2.1-or-later integration; existing per-file notices retained"
+    },
+    {
+      "legacy_path": "runtime/dxmt/patches/0006-managed-window-consumer.patch",
+      "sha256": "498f4832430ae7b3eb071cac09302107a099fcb2cd73d5b0fd6eff0b5b8612b6",
+      "source_repository": "https://github.com/postmelee/pear",
+      "checkpoint_commit": "951264bf5be4b9d2afb87320f5fac74778b2dd58",
+      "last_path_commit": "86d3fd7beb940c7c4bb6b8daf91e49c3d434224b",
+      "matches_last_path_commit": true,
+      "origin_kind": "committed Pear patch",
+      "order": 4,
+      "layer": "selected",
+      "previous_classification": "selected_graphics_overlay",
+      "changes": [
+        {
+          "path": "src/winemetal/unix/pear_dxmt_metal_proxy.h",
+          "before_sha256": "8b950790b02c307effa17dca216d1472fbd81f7e8c8e0b6db123c2dddfadf7f5",
+          "after_sha256": "32a7cf145ca70bfe3a60a14c19dd561890ba2dd4e02fe1c324657619decb962f",
+          "size_bytes": 2773,
+          "mode": "100644"
+        },
+        {
+          "path": "src/winemetal/unix/pear_macdrv_metal_v2.h",
+          "before_sha256": null,
+          "after_sha256": "c2da86219c1c90939339c39086b24d68a86d672cf72f239a88df3ac402be0eb9",
+          "size_bytes": 925,
+          "mode": "100644"
+        }
+      ],
+      "license": "LGPL-2.1-or-later integration; existing per-file notices retained"
+    },
+    {
+      "legacy_path": "runtime/dxmt/patches/0008-surface-consumer-controls.patch",
+      "sha256": "39cfa48f89463a74261da26d81df1668c101b424cf87018f33718b6ef3fb9487",
+      "source_repository": "https://github.com/postmelee/pear",
+      "checkpoint_commit": "951264bf5be4b9d2afb87320f5fac74778b2dd58",
+      "last_path_commit": "86d3fd7beb940c7c4bb6b8daf91e49c3d434224b",
+      "matches_last_path_commit": true,
+      "origin_kind": "committed Pear patch",
+      "order": 5,
+      "layer": "selected",
+      "previous_classification": "selected_graphics_overlay",
+      "changes": [
+        {
+          "path": "src/winemetal/unix/pear_dxmt_metal_proxy.h",
+          "before_sha256": "32a7cf145ca70bfe3a60a14c19dd561890ba2dd4e02fe1c324657619decb962f",
+          "after_sha256": "d84e4a9d0b92ba0fe8c36d1303d5d43e66ed8659e43e3637b60a764fcca75106",
+          "size_bytes": 3955,
+          "mode": "100644"
+        },
+        {
+          "path": "src/winemetal/unix/winemetal_unix.c",
+          "before_sha256": "ecadd2f0303e9c78940ff05697a5049b1669389a127b2bea9438f6d3c3497eb2",
+          "after_sha256": "f4848c40edfc88d48081af5aa19e1e33220f5d13679f3e013499141d33ef436d",
+          "size_bytes": 139364,
+          "mode": "100644"
+        }
+      ],
+      "license": "LGPL-2.1-or-later integration; existing per-file notices retained"
     }
   ],
   "source_semantics": "Exact selected source checkpoint; merged source ownership view is distinct from per-artifact compilation views.",
@@ -88,6 +216,13 @@
       "provider": "pear-wine",
       "provider_path": "dlls/winemac.drv/pear_macdrv_metal_v1.h",
       "sha256": "7a19ce6b49c19ab7603ff875d6e9d92ababa92dd1202fb3c912f02c2f6e5275d",
+      "authority": "Pinned Wine provider export; no independent edits."
+    },
+    {
+      "path": "src/winemetal/unix/pear_macdrv_metal_v2.h",
+      "provider": "pear-wine",
+      "provider_path": "dlls/winemac.drv/pear_macdrv_metal_v2.h",
+      "sha256": "c2da86219c1c90939339c39086b24d68a86d672cf72f239a88df3ac402be0eb9",
       "authority": "Pinned Wine provider export; no independent edits."
     }
   ],
