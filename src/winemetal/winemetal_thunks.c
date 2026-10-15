@@ -714,6 +714,8 @@ MetalLayer_getProps(obj_handle_t layer, struct WMTLayerProps *props) {
 WINEMETAL_API obj_handle_t
 CreateMetalViewFromHWND(intptr_t hwnd, obj_handle_t device, obj_handle_t *layer) {
   struct unixcall_create_metal_view_from_hwnd params;
+  if (!layer) return NULL_OBJECT_HANDLE;
+  *layer = NULL_OBJECT_HANDLE;
   params.hwnd = (uint64_t)(uintptr_t)hwnd;
   params.device = device;
   params.ret_layer = NULL_OBJECT_HANDLE;

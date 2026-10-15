@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "component": "pear-dxmt",
+  "layer": "accepted",
+  "upstream": {
+    "url": "https://github.com/3Shain/dxmt.git",
+    "commit": "7c8dee1c2d73415301ceb7d1fa810861cef4cd67",
+    "tree": "c273b79a2bfa47e62e8526786559f4d18911625a"
+  },
+  "selected_files": [
+    {
+      "path": "src/winemetal/unix/pear_dxmt_metal_proxy.h",
+      "mode": "100644",
+      "size_bytes": 2596,
+      "sha256": "63218576d4e46c11cc8bc17dfd0c8b3179135c4d7758584dae229a2df7beeec0"
+    },
+    {
+      "path": "src/winemetal/unix/pear_macdrv_metal_v1.h",
+      "mode": "100644",
+      "size_bytes": 1684,
+      "sha256": "7a19ce6b49c19ab7603ff875d6e9d92ababa92dd1202fb3c912f02c2f6e5275d"
+    },
+    {
+      "path": "src/winemetal/unix/winemetal_unix.c",
+      "mode": "100644",
+      "size_bytes": 137071,
+      "sha256": "24b588b1234a2072ac7bb9832bb838dd06ada7b424af173b1bf7172195098d7a"
+    },
+    {
+      "path": "src/winemetal/winemetal_thunks.c",
+      "mode": "100644",
+      "size_bytes": 38352,
+      "sha256": "8aad868d813600769508b83a741eb4c767b806d7541f3c6ac9d47661e00e310d"
+    }
+  ],
+  "patch_provenance": [
+    {
+      "legacy_path": "runtime/dxmt/patches/dxmt/0001-consume-typed-metal-lease.patch",
+      "sha256": "4afcd5ac752b8caa8547430b9f760816c5c218af949fd88326745ec879114918",
+      "source_repository": "https://github.com/postmelee/pear",
+      "checkpoint_commit": "951264bf5be4b9d2afb87320f5fac74778b2dd58",
+      "last_path_commit": "2b6732df5bb9fc40af4c9eb8c72ded493acf1742",
+      "matches_last_path_commit": true,
+      "origin_kind": "committed Pear patch",
+      "order": 1,
+      "layer": "accepted",
+      "previous_classification": "accepted_base",
+      "changes": [
+        {
+          "path": "src/winemetal/unix/pear_dxmt_metal_proxy.h",
+          "before_sha256": null,
+          "after_sha256": "63218576d4e46c11cc8bc17dfd0c8b3179135c4d7758584dae229a2df7beeec0",
+          "size_bytes": 2596,
+          "mode": "100644"
+        },
+        {
+          "path": "src/winemetal/unix/pear_macdrv_metal_v1.h",
+          "before_sha256": null,
+          "after_sha256": "7a19ce6b49c19ab7603ff875d6e9d92ababa92dd1202fb3c912f02c2f6e5275d",
+          "size_bytes": 1684,
+          "mode": "100644"
+        },
+        {
+          "path": "src/winemetal/unix/winemetal_unix.c",
+          "before_sha256": "784a4ae87ecd2f164bc893cec43452f91de830ec7b5c02bb9c8d568be0dfb769",
+          "after_sha256": "24b588b1234a2072ac7bb9832bb838dd06ada7b424af173b1bf7172195098d7a",
+          "size_bytes": 137071,
+          "mode": "100644"
+        },
+        {
+          "path": "src/winemetal/winemetal_thunks.c",
+          "before_sha256": "715d015ca94a3a72d7b4dab0dd9254f423cdf9ee7886ca2dde319c9a30328a07",
+          "after_sha256": "8aad868d813600769508b83a741eb4c767b806d7541f3c6ac9d47661e00e310d",
+          "size_bytes": 38352,
+          "mode": "100644"
+        }
+      ],
+      "license": "LGPL-2.1-or-later integration; existing per-file notices retained"
+    }
+  ],
+  "source_semantics": "Exact selected source checkpoint; merged source ownership view is distinct from per-artifact compilation views.",
+  "source_authority": "Imported checkpoint; final authority cutover requires separate owner acceptance.",
+  "private_inputs": "No game-derived selector, owned image/spec/role data, private diagnostics, prefix, credentials or signing data is imported.",
+  "generated_inputs": [],
+  "imported_headers": [
+    {
+      "path": "src/winemetal/unix/pear_macdrv_metal_v1.h",
+      "provider": "pear-wine",
+      "provider_path": "dlls/winemac.drv/pear_macdrv_metal_v1.h",
+      "sha256": "7a19ce6b49c19ab7603ff875d6e9d92ababa92dd1202fb3c912f02c2f6e5275d",
+      "authority": "Pinned Wine provider export; no independent edits."
+    }
+  ],
+  "submodules": [
+    {
+      "path": "include/native/directx",
+      "commit": "9df86f2341616ef1888ae59919feaa6d4fad693d",
+      "tree": "66fcb250507a2c45bd9a22f44795d0e4c7b613f5",
+      "url": "https://github.com/misyltoad/mingw-directx-headers"
+    }
+  ]
+}

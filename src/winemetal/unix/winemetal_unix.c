@@ -16,6 +16,7 @@
 typedef int NTSTATUS;
 #define STATUS_SUCCESS 0
 #define STATUS_UNSUCCESSFUL 0xC0000001
+#include "pear_dxmt_metal_proxy.h"
 
 void
 execute_on_main(dispatch_block_t block) {
@@ -1600,7 +1601,7 @@ _MetalDrawable_texture(void *obj) {
 }
 
 static NTSTATUS
-_MetalLayer_nextDrawable(void *obj) {
+_pear_raw_MetalLayer_nextDrawable(void *obj) {
   struct unixcall_generic_obj_obj_ret *params = obj;
   params->ret = (obj_handle_t)[(CAMetalLayer *)params->handle nextDrawable];
   return STATUS_SUCCESS;
@@ -1621,7 +1622,7 @@ _MTLDevice_supportsFXTemporalScaler(void *obj) {
 }
 
 static NTSTATUS
-_MetalLayer_setProps(void *obj) {
+_pear_raw_MetalLayer_setProps(void *obj) {
   struct unixcall_generic_obj_constptr_noret *params = obj;
   CAMetalLayer *layer = (CAMetalLayer *)params->handle;
   const struct WMTLayerProps *props = params->arg.ptr;
@@ -1638,7 +1639,7 @@ _MetalLayer_setProps(void *obj) {
 }
 
 static NTSTATUS
-_MetalLayer_getProps(void *obj) {
+_pear_raw_MetalLayer_getProps(void *obj) {
   struct unixcall_generic_obj_ptr_noret *params = obj;
   CAMetalLayer *layer = (CAMetalLayer *)params->handle;
   struct WMTLayerProps *props = params->arg.ptr;
@@ -1650,90 +1651,6 @@ _MetalLayer_getProps(void *obj) {
   props->drawable_height = layer.drawableSize.height;
   props->drawable_width = layer.drawableSize.width;
   props->pixel_format = layer.pixelFormat;
-  return STATUS_SUCCESS;
-}
-
-typedef struct macdrv_opaque_metal_device *macdrv_metal_device;
-typedef struct macdrv_opaque_metal_view *macdrv_metal_view;
-typedef struct macdrv_opaque_metal_layer *macdrv_metal_layer;
-typedef struct macdrv_opaque_view *macdrv_view;
-typedef struct macdrv_opaque_window *macdrv_window;
-typedef struct macdrv_opaque_window_data *macdrv_window_data;
-typedef struct opaque_window_surface *window_surface;
-typedef struct opaque_HWND *HWND;
-struct macdrv_win_data {
-  HWND hwnd; /* hwnd that this private data belongs to */
-  macdrv_window cocoa_window;
-  macdrv_view cocoa_view;
-  macdrv_view client_cocoa_view;
-};
-
-struct macdrv_functions_t {
-  void (*macdrv_init_display_devices)(BOOL);
-  struct macdrv_win_data *(*get_win_data)(HWND hwnd);
-  void (*release_win_data)(struct macdrv_win_data *data);
-  macdrv_window (*macdrv_get_cocoa_window)(HWND hwnd, BOOL require_on_screen);
-  macdrv_metal_device (*macdrv_create_metal_device)(void);
-  void (*macdrv_release_metal_device)(macdrv_metal_device d);
-  macdrv_metal_view (*macdrv_view_create_metal_view)(macdrv_view v, macdrv_metal_device d);
-  macdrv_metal_layer (*macdrv_view_get_metal_layer)(macdrv_metal_view v);
-  void (*macdrv_view_release_metal_view)(macdrv_metal_view v);
-  void (*on_main_thread)(dispatch_block_t b);
-};
-
-static NTSTATUS
-_CreateMetalViewFromHWND(void *obj) {
-  struct unixcall_create_metal_view_from_hwnd *params = obj;
-
-  struct macdrv_win_data *(*pfn_get_win_data)(HWND hwnd) = NULL;
-  void (*pfn_release_win_data)(struct macdrv_win_data *data) = NULL;
-  macdrv_metal_view (*pfn_macdrv_view_create_metal_view)(macdrv_view v, macdrv_metal_device d) = NULL;
-  macdrv_metal_layer (*pfn_macdrv_view_get_metal_layer)(macdrv_metal_view v) = NULL;
-
-  struct macdrv_functions_t *macdrv_functions;
-  if ((macdrv_functions = dlsym(RTLD_DEFAULT, "macdrv_functions"))) {
-    pfn_get_win_data = macdrv_functions->get_win_data;
-    pfn_release_win_data = macdrv_functions->release_win_data;
-    pfn_macdrv_view_create_metal_view = macdrv_functions->macdrv_view_create_metal_view;
-    pfn_macdrv_view_get_metal_layer = macdrv_functions->macdrv_view_get_metal_layer;
-  } else {
-    pfn_get_win_data = dlsym(RTLD_DEFAULT, "get_win_data");
-    pfn_release_win_data = dlsym(RTLD_DEFAULT, "release_win_data");
-    pfn_macdrv_view_create_metal_view = dlsym(RTLD_DEFAULT, "macdrv_view_create_metal_view");
-    pfn_macdrv_view_get_metal_layer = dlsym(RTLD_DEFAULT, "macdrv_view_get_metal_layer");
-  }
-
-  if (pfn_get_win_data && pfn_release_win_data && pfn_macdrv_view_create_metal_view &&
-      pfn_macdrv_view_get_metal_layer) {
-    struct macdrv_win_data *win_data = pfn_get_win_data((HWND)params->hwnd);
-    macdrv_metal_view view =
-        pfn_macdrv_view_create_metal_view(win_data->client_cocoa_view, (macdrv_metal_device)params->device);
-    params->ret_view = (obj_handle_t)view;
-    if (view) {
-      params->ret_layer = (obj_handle_t)pfn_macdrv_view_get_metal_layer(view);
-    }
-    pfn_release_win_data(win_data);
-  }
-
-  return STATUS_SUCCESS;
-}
-
-static NTSTATUS
-_ReleaseMetalView(void *obj) {
-  struct unixcall_generic_obj_noret *params = obj;
-
-  void (*pfn_macdrv_view_release_metal_view)(macdrv_metal_view v) = NULL;
-
-  struct macdrv_functions_t *macdrv_functions;
-  if ((macdrv_functions = dlsym(RTLD_DEFAULT, "macdrv_functions"))) {
-    pfn_macdrv_view_release_metal_view = macdrv_functions->macdrv_view_release_metal_view;
-  } else {
-    pfn_macdrv_view_release_metal_view = dlsym(RTLD_DEFAULT, "macdrv_view_release_metal_view");
-  }
-
-  if (pfn_macdrv_view_release_metal_view)
-    pfn_macdrv_view_release_metal_view((macdrv_metal_view)params->handle);
-
   return STATUS_SUCCESS;
 }
 
@@ -2263,7 +2180,7 @@ _CGColorSpace_checkColorSpaceSupported(void *obj) {
 }
 
 static NTSTATUS
-_MetalLayer_setColorSpace(void *obj) {
+_pear_raw_MetalLayer_setColorSpace(void *obj) {
   struct unixcall_generic_obj_uint64_uint64_ret *params = obj;
   CAMetalLayer *layer = (CAMetalLayer *)params->handle;
   enum WMTColorSpace colorspace = params->arg;
@@ -2403,7 +2320,7 @@ struct DisplaySetting {
 struct DisplaySetting g_display_settings[2] = {{0, 0, {}}, {0, 0, {}}};
 
 static NTSTATUS
-_MetalLayer_getEDRValue(void *obj) {
+_pear_raw_MetalLayer_getEDRValue(void *obj) {
   struct unixcall_generic_obj_ptr_noret *params = obj;
   CAMetalLayer *layer = (CAMetalLayer *)params->handle;
   struct WMTEDRValue *value = params->arg.ptr;
@@ -2479,7 +2396,7 @@ _WMTUpdateDisplaySetting(void *obj) {
 }
 
 static NTSTATUS
-_WMTQueryDisplaySettingForLayer(void *obj) {
+_pear_raw_WMTQueryDisplaySettingForLayer(void *obj) {
   struct unixcall_query_display_setting_for_layer *params = obj;
   CAMetalLayer *layer = (CAMetalLayer *)params->layer;
   struct WMTHDRMetadata *hdr_metadata_out = params->hdr_metadata.ptr;
@@ -3156,6 +3073,132 @@ _MTLTexture_getBytes(void *obj) {
 /*
  * Definition from cache.c
  */
+
+static void pear_op_MetalLayer_nextDrawable(void *opaque,uint64_t layer)
+{
+    struct pear_layer_call *call=opaque;
+    struct unixcall_generic_obj_obj_ret *params=call->params,local=*params;
+    local.handle=layer;
+    
+    call->result=_pear_raw_MetalLayer_nextDrawable(&local);
+    if(local.ret) [(id)(uintptr_t)local.ret retain];
+    local.handle=params->handle; *params=local;
+}
+static NTSTATUS _MetalLayer_nextDrawable(void *obj)
+{
+    struct unixcall_generic_obj_obj_ret *params=obj;
+    struct pear_layer_call call={obj,STATUS_UNSUCCESSFUL};
+     params->ret=0;
+    NTSTATUS status=pear_call_layer(params->handle,pear_op_MetalLayer_nextDrawable,&call);
+    if(params->ret) [(id)(uintptr_t)params->ret autorelease];
+    if(status) { params->ret=0; }
+    return status;
+}
+
+static void pear_op_MetalLayer_setProps(void *opaque,uint64_t layer)
+{
+    struct pear_layer_call *call=opaque;
+    struct unixcall_generic_obj_constptr_noret *params=call->params,local=*params;
+    local.handle=layer;
+    if(((const struct WMTLayerProps*)local.arg.ptr)->device!=(obj_handle_t)(uintptr_t)((CAMetalLayer*)(uintptr_t)layer).device) { call->result=STATUS_UNSUCCESSFUL; return; }
+    call->result=_pear_raw_MetalLayer_setProps(&local);
+    
+    local.handle=params->handle; *params=local;
+}
+static NTSTATUS _MetalLayer_setProps(void *obj)
+{
+    struct unixcall_generic_obj_constptr_noret *params=obj;
+    struct pear_layer_call call={obj,STATUS_UNSUCCESSFUL};
+    if(!params->arg.ptr) return STATUS_UNSUCCESSFUL; 
+    NTSTATUS status=pear_call_layer(params->handle,pear_op_MetalLayer_setProps,&call);
+    
+    if(status) {  }
+    return status;
+}
+
+static void pear_op_MetalLayer_getProps(void *opaque,uint64_t layer)
+{
+    struct pear_layer_call *call=opaque;
+    struct unixcall_generic_obj_ptr_noret *params=call->params,local=*params;
+    local.handle=layer;
+    
+    call->result=_pear_raw_MetalLayer_getProps(&local);
+    
+    local.handle=params->handle; *params=local;
+}
+static NTSTATUS _MetalLayer_getProps(void *obj)
+{
+    struct unixcall_generic_obj_ptr_noret *params=obj;
+    struct pear_layer_call call={obj,STATUS_UNSUCCESSFUL};
+    if(!params->arg.ptr) return STATUS_UNSUCCESSFUL; memset(params->arg.ptr,0,sizeof(struct WMTLayerProps));
+    NTSTATUS status=pear_call_layer(params->handle,pear_op_MetalLayer_getProps,&call);
+    
+    if(status) { memset(params->arg.ptr,0,sizeof(struct WMTLayerProps)); }
+    return status;
+}
+
+static void pear_op_MetalLayer_setColorSpace(void *opaque,uint64_t layer)
+{
+    struct pear_layer_call *call=opaque;
+    struct unixcall_generic_obj_uint64_uint64_ret *params=call->params,local=*params;
+    local.handle=layer;
+    
+    call->result=_pear_raw_MetalLayer_setColorSpace(&local);
+    
+    local.handle=params->handle; *params=local;
+}
+static NTSTATUS _MetalLayer_setColorSpace(void *obj)
+{
+    struct unixcall_generic_obj_uint64_uint64_ret *params=obj;
+    struct pear_layer_call call={obj,STATUS_UNSUCCESSFUL};
+     params->ret=false;
+    NTSTATUS status=pear_call_layer(params->handle,pear_op_MetalLayer_setColorSpace,&call);
+    
+    if(status) { params->ret=false; }
+    return status;
+}
+
+static void pear_op_MetalLayer_getEDRValue(void *opaque,uint64_t layer)
+{
+    struct pear_layer_call *call=opaque;
+    struct unixcall_generic_obj_ptr_noret *params=call->params,local=*params;
+    local.handle=layer;
+    
+    call->result=_pear_raw_MetalLayer_getEDRValue(&local);
+    
+    local.handle=params->handle; *params=local;
+}
+static NTSTATUS _MetalLayer_getEDRValue(void *obj)
+{
+    struct unixcall_generic_obj_ptr_noret *params=obj;
+    struct pear_layer_call call={obj,STATUS_UNSUCCESSFUL};
+    if(!params->arg.ptr) return STATUS_UNSUCCESSFUL; memset(params->arg.ptr,0,sizeof(struct WMTEDRValue));
+    NTSTATUS status=pear_call_layer(params->handle,pear_op_MetalLayer_getEDRValue,&call);
+    
+    if(status) { memset(params->arg.ptr,0,sizeof(struct WMTEDRValue)); }
+    return status;
+}
+
+static void pear_op_WMTQueryDisplaySettingForLayer(void *opaque,uint64_t layer)
+{
+    struct pear_layer_call *call=opaque;
+    struct unixcall_query_display_setting_for_layer *params=call->params,local=*params;
+    local.layer=layer;
+    
+    call->result=_pear_raw_WMTQueryDisplaySettingForLayer(&local);
+    
+    local.layer=params->layer; *params=local;
+}
+static NTSTATUS _WMTQueryDisplaySettingForLayer(void *obj)
+{
+    struct unixcall_query_display_setting_for_layer *params=obj;
+    struct pear_layer_call call={obj,STATUS_UNSUCCESSFUL};
+    if(!params->hdr_metadata.ptr) return STATUS_UNSUCCESSFUL; params->version=0; params->colorspace=0; memset(&params->edr_value,0,sizeof(params->edr_value)); memset(params->hdr_metadata.ptr,0,sizeof(struct WMTHDRMetadata));
+    NTSTATUS status=pear_call_layer(params->layer,pear_op_WMTQueryDisplaySettingForLayer,&call);
+    
+    if(status) { params->version=0; params->colorspace=0; memset(&params->edr_value,0,sizeof(params->edr_value)); memset(params->hdr_metadata.ptr,0,sizeof(struct WMTHDRMetadata)); }
+    return status;
+}
 
 NTSTATUS _CacheReader_alloc_init(void *obj);
 NTSTATUS _CacheReader_get(void *obj);
