@@ -9,6 +9,10 @@ The selected reconstruction uses fork commit `e800e770006fc7c37831ab857000a4781c
 reviewed recipe names them. Preserve this lock and its original receipts; do not
 substitute a current branch tip or a dirty test checkout for the historical pin.
 
+New downstream task branches start from the default/integration branch `master`,
+and pull requests target `master`. Use a fresh development checkout. Do not
+substitute its branch tip for the historical source/build/tool pins above.
+
 ## Source checks available now
 
 From this repository root, using Python 3 and Git:
@@ -41,7 +45,7 @@ python3 -B -m pear_runtime.recipes.graphics \
 
 This command runs from `pear-runtime`, after all named variables have been bound
 to reviewed canonical paths and the storage/input gates pass. The
-[development guide](https://github.com/postmelee/pear-runtime/blob/codex/task56/docs/development.md) distinguishes the historical build pins from later
+[development guide](https://github.com/postmelee/pear-runtime/blob/master/docs/development.md) distinguishes the historical build pins from later
 test/tool revisions and provides the fixture and bounded recovery commands.
 
 The exercised development selector uses the separate runtime tool commit
@@ -67,7 +71,7 @@ owned image/spec inputs and signing material are not stored here.
 
 Wine owns the v1/v2 typed Metal provider headers; this fork tracks only exact pinned consumer mirrors. DXMT remains the provider of its upstream `src/winemetal/winemetal.h` and `winemetal_thunks.h`, which Wine consumes. Do not edit either consumer mirror independently.
 
-Canonical provider paths and exact digests are in the manifest. The existing owners accepted this fork as the single future editable authority for its selected range; frozen historical patches remain provenance. The [canonical cutover record](https://github.com/postmelee/pear-runtime/blob/codex/task56/provenance/source-cutover-task56.json) binds the exact reviewed commits and ownership scope. This local acceptance does not activate a runtime, renew historical build pins or release retained inputs. The Pear Task #56 handoff retains its historical publication refs; [Task #75 PR #1](https://github.com/postmelee/pear-dxmt/pull/1) is merged.
+Canonical provider paths and exact digests are in the manifest. The existing owners accepted this fork as the single future editable authority for its selected range; frozen historical patches remain provenance. The [canonical cutover record](https://github.com/postmelee/pear-runtime/blob/master/provenance/source-cutover-task56.json) binds the exact reviewed commits and ownership scope. This local acceptance does not activate a runtime, renew historical build pins or release retained inputs. The Pear Task #56 handoff retains its historical publication refs; [Task #75 PR #1](https://github.com/postmelee/pear-dxmt/pull/1) is merged.
 
 ## Licensing and contributions
 
@@ -89,7 +93,7 @@ remain separate claims. The selected reconstruction and candidate3's four native
 controls, three bootstrap controls, seven-fixture batch and eighteen-frame
 observation passed within their recorded scopes and independent-release checks.
 Retained candidate2 evidence is reused only under the reviewed unchanged-input
-boundary. The [accepted method map](https://github.com/postmelee/pear-runtime/blob/codex/task56/provenance/paired-memory-methods.json)
+boundary. The [accepted method map](https://github.com/postmelee/pear-runtime/blob/master/provenance/paired-memory-methods.json)
 does not turn selected-input semantics into generic future enforcement.
 
 Pear development prepare/select/inspect and selection-metadata recovery passed.
