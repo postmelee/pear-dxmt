@@ -2,11 +2,16 @@
 
 This public downstream source repository owns the selected Pear DXMT source checkpoint. It preserves upstream history, source languages, file notices and the original README below. The linked Pear component source repositories are publicly readable; retained build inputs and private local configuration remain separate prerequisites.
 
+For new downstream work, create a task branch from `master` and target `master`
+in the pull request. `master` is the default and integration branch; retained
+source/build pins remain unchanged. Use a fresh checkout rather than switching
+a retained producer root.
+
 See [Pear source and verification handoff](pear/README.md) for the exact source manifest, component boundary, source checks, selected reconstruction and current verification limits. The runtime build/assembly owner is [pear-runtime](https://github.com/postmelee/pear-runtime); the application and game policy owner is [Pear](https://github.com/postmelee/pear).
 
-The [selected reconstruction](https://github.com/postmelee/pear-runtime/blob/c8887f9edaba57dffe7772cc26fd19aa9571d451/locks/task56-reconstruction-v1.json) produced a separate development candidate. The fifteen fresh candidate3 controls passed with independent release; see the [current runtime status](https://github.com/postmelee/pear-runtime/blob/codex/task56/README.md#status-and-boundaries). Pear development selection, exact input inspection and metadata recovery passed; the seven synthetic fixtures also passed through the Pear entrypoint. Game copying/execution and public support remain unqualified. The original runtime and Preview selection remain unchanged.
+The [selected reconstruction](https://github.com/postmelee/pear-runtime/blob/c8887f9edaba57dffe7772cc26fd19aa9571d451/locks/task56-reconstruction-v1.json) produced a separate development candidate. The fifteen fresh candidate3 controls passed with independent release; see the [current runtime status](https://github.com/postmelee/pear-runtime/blob/master/README.md#status-and-boundaries). Pear development selection, exact input inspection and metadata recovery passed; the seven synthetic fixtures also passed through the Pear entrypoint. Game copying/execution and public support remain unqualified. The original runtime and Preview selection remain unchanged.
 
-The selected source cutover and development handoff are accepted locally by the existing owners. The [canonical cutover record](https://github.com/postmelee/pear-runtime/blob/codex/task56/provenance/source-cutover-task56.json) identifies the exact accepted commits, ownership limits and separate publication status. The Pear Task #56 handoff retains its historical publication refs. [Task #75 PR #1](https://github.com/postmelee/pear-dxmt/pull/1) is merged; making the source public does not activate a runtime.
+The selected source cutover and development handoff are accepted locally by the existing owners. The [canonical cutover record](https://github.com/postmelee/pear-runtime/blob/master/provenance/source-cutover-task56.json) identifies the exact accepted commits, ownership limits and separate publication status. The Pear Task #56 handoff retains its historical publication refs. [Task #75 PR #1](https://github.com/postmelee/pear-dxmt/pull/1) is merged; making the source public does not activate a runtime.
 
 ---
 
