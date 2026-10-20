@@ -67,13 +67,13 @@ owned image/spec inputs and signing material are not stored here.
 
 Wine owns the v1/v2 typed Metal provider headers; this fork tracks only exact pinned consumer mirrors. DXMT remains the provider of its upstream `src/winemetal/winemetal.h` and `winemetal_thunks.h`, which Wine consumes. Do not edit either consumer mirror independently.
 
-Canonical provider paths and exact digests are in the manifest. The existing owners accepted this fork as the single future editable authority for its selected range; frozen historical patches remain provenance. The [canonical cutover record](https://github.com/postmelee/pear-runtime/blob/codex/task56/provenance/source-cutover-task56.json) binds the exact reviewed commits and ownership scope. This local acceptance does not activate a runtime, renew historical build pins or release retained inputs. Final private publication refs are recorded separately in the Pear Task #56 handoff.
+Canonical provider paths and exact digests are in the manifest. The existing owners accepted this fork as the single future editable authority for its selected range; frozen historical patches remain provenance. The [canonical cutover record](https://github.com/postmelee/pear-runtime/blob/codex/task56/provenance/source-cutover-task56.json) binds the exact reviewed commits and ownership scope. This local acceptance does not activate a runtime, renew historical build pins or release retained inputs. The Pear Task #56 handoff retains its historical publication refs; [Task #75 PR #1](https://github.com/postmelee/pear-dxmt/pull/1) is merged.
 
 ## Licensing and contributions
 
 Upstream Wine/DXMT LGPL terms and existing MIT or other per-file notices remain unchanged. Copied/adapted inputs retain their original attribution and version-specific component notices. New original scripts/tests under `pear/` carry GPL-3.0-or-later SPDX notices; [COPYING](COPYING) supplies that license text and does not relicense the imported component.
 
-DXMT's upstream contribution policy rejects AI-generated/co-authored contributions. This private downstream work does not authorize an upstream submission, rewrite upstream authorship or claim upstream acceptance. Preserve the original contribution policy.
+DXMT's upstream contribution policy rejects AI-generated/co-authored contributions. This downstream work does not authorize an upstream submission, rewrite upstream authorship or claim upstream acceptance. Preserve the original contribution policy.
 
 ## Related repositories and limits
 
@@ -83,7 +83,7 @@ DXMT's upstream contribution policy rejects AI-generated/co-authored contributio
 - [pear-runtime](https://github.com/postmelee/pear-runtime): compatible composition, build, verification and recovery.
 - [Pear](https://github.com/postmelee/pear): app/Steam/game policy and development selection.
 
-These component repositories require collaborator access. Source validation,
+These component source repositories are publicly readable. Source validation,
 compilation, synthetic runtime tests, game qualification and public distribution
 remain separate claims. The selected reconstruction and candidate3's four native
 controls, three bootstrap controls, seven-fixture batch and eighteen-frame
